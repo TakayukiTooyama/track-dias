@@ -27,7 +27,7 @@ module.exports = {
     'prefer-arrow-callback': 'error',
     'prefer-const': 'error',
     'func-style': ['error', 'expression'],
-    'arrow-body-style': ['error', 'always'],
+    'arrow-body-style': ['error', 'as-needed'],
     'no-restricted-imports': [
       'error',
       { paths: [{ name: 'react', importNames: ['default'] }] },
@@ -35,15 +35,15 @@ module.exports = {
 
     // react
     'react/display-name': 'error',
-    'react/jsx-handler-names': [
-      'error',
-      {
-        eventHandlerPrefix: 'handle',
-        eventHandlerPropPrefix: 'on',
-        checkLocalVariables: false,
-        checkInlineFunction: true,
-      },
-    ],
+    // 'react/jsx-handler-names': [
+    //   'error',
+    //   {
+    //     eventHandlerPrefix: 'handle',
+    //     eventHandlerPropPrefix: 'on',
+    //     checkLocalVariables: false,
+    //     checkInlineFunction: true,
+    //   },
+    // ],
     'react/destructuring-assignment': ['error', 'always'],
     'react/function-component-definition': [
       2,
@@ -61,13 +61,13 @@ module.exports = {
     'sort-keys-custom-order/object-keys': [
       'error',
       {
-        orderedKeys: ['id', 'name', 'title'],
+        orderedKeys: ['id', 'videoName', 'name', 'title'],
       },
     ],
     'sort-keys-custom-order/type-keys': [
       'error',
       {
-        orderedKeys: ['id', 'name', 'title'],
+        orderedKeys: ['id', 'videoName', 'name', 'title'],
       },
     ],
 
