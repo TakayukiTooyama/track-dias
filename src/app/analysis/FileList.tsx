@@ -3,14 +3,12 @@ import { Accordion, ActionIcon } from '@mantine/core';
 import type { FC, ReactNode } from 'react';
 import { Trash } from 'tabler-icons-react';
 
-import type { VideoInfo } from '@/type/video';
-
 type VideoListProps = {
   handleDeleteItem: (filename: string) => void;
-  handleSelectItem: (videoInfo: VideoInfo) => void;
+  handleSelectItem: (video: File) => void;
   icon?: ReactNode;
   isEdit?: boolean;
-  videoInfo: VideoInfo[];
+  videos: File[];
 } & AccordionControlProps;
 
 export const FileList: FC<VideoListProps> = ({
@@ -18,11 +16,11 @@ export const FileList: FC<VideoListProps> = ({
   handleSelectItem,
   icon,
   isEdit,
-  videoInfo,
+  videos,
   ...props
 }) => (
   <Accordion chevron={false} classNames={{ control: 'px-4 py-2' }}>
-    {videoInfo.map((video, idx) => (
+    {videos.map((video, idx) => (
       <Accordion.Item key={idx} value={`${video.name}-${idx}`}>
         <div className='flex items-center justify-center'>
           <Accordion.Control

@@ -54,19 +54,17 @@ export const useVideoInfo = () => {
   }, []);
 
   /* 動画選択 */
-  const handleSelectVideo = useCallback(
-    (videoInfo: VideoInfo) => {
-      if (videoUrl) {
-        window.URL.revokeObjectURL(videoUrl);
-      }
-      // console.log(videoUrl);
-      // const createdAt = videoInfo.createdAt;
-      // console.log('videoInfo', typeof createdAt);
-      // setVideoUrl(window.URL.createObjectURL(videoInfo.file));
-      // setSelectedVideo(videoInfo);
-    },
-    [videoUrl],
-  );
+  // const handleSelectVideo = useCallback(
+  //   (videoInfo: VideoInfo) => {
+  //     if (videoUrl) {
+  //       window.URL.revokeObjectURL(videoUrl);
+  //     }
+  //     const createdAt = videoInfo.createdAt;
+  //     setVideoUrl(window.URL.createObjectURL(videoInfo.file));
+  //     setSelectedVideo(videoInfo);
+  //   },
+  //   [videoUrl],
+  // );
 
   /* 動画削除 */
   // const handleDeleteVideo = useCallback(
@@ -105,10 +103,7 @@ export const useVideoInfo = () => {
   return {
     deleteVideoInfo,
     handleAnalyzeVideo,
-    // handleDeleteVideo,
-    // handleInputVideo,
     handleInputVideo,
-    handleSelectVideo,
     isAnalyze,
     selectedVideo,
     videoInfo,

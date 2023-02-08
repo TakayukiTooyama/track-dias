@@ -48,6 +48,7 @@ const Home: NextPage = () => {
   };
 
   const handleClickDot = (payload: unknown): void => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const dotPayload = payload as Record<keyof RechartsDotPayload, unknown>;
     // const studyData = dotPayload.payload as Record<keyof jointAngleData, unknown>;
     // if (typeof studyData.angle === 'number') {

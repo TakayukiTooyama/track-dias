@@ -1,31 +1,31 @@
+import { AspectRatio } from '@mantine/core';
 import type { FC } from 'react';
-import ReactPlayer from 'react-player/lazy';
 
 type VideoPlayerProp = {
   url: string;
 };
 
-export type VideoState = {
-  duration: number;
-  loaded: number;
-  muted: boolean;
-  playbackRate: number;
-  played: number;
-  playing: boolean;
-  seeking: boolean;
-  url: string | null;
-  volume: number | null;
-};
-
 export const VideoPlayer: FC<VideoPlayerProp> = ({ url }) => (
-  <div className='aspect-video'>
-    <ReactPlayer
-      url={url}
-      width='100%'
-      height='100%'
-      controls={true}
-      playing={true}
-      muted={true}
-    />
-  </div>
+  <AspectRatio
+    ratio={16 / 9}
+    sx={(theme) => ({
+      backgroundColor:
+        theme.colorScheme === 'dark'
+          ? theme.colors.dark[6]
+          : theme.colors.gray[3],
+    })}
+  >
+    {url ? (
+      <video
+        src={url}
+        controls
+        muted
+        loop
+        playsInline
+        autoPlay
+        preload='metadata'
+        controlsList='nodownload'
+      />
+    ) : null}
+  </AspectRatio>
 );

@@ -44,15 +44,7 @@ const angleData = [
   { hipAngle: 90, time: 0.48 },
 ];
 
-export const LineChart: FC<LineChartProps> = ({
-  data,
-  handleClickDot,
-  handleClickXAxis,
-  xDataKey,
-  xLabel,
-  yDataKey,
-  yLabel,
-}) => {
+export const LineChart: FC<LineChartProps> = ({ xDataKey, yDataKey }) => {
   const theme = useMantineTheme();
   const dark = theme.colorScheme === 'dark';
 

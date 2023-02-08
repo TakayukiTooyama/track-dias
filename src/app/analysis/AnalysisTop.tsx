@@ -1,22 +1,17 @@
 import { Button, Title } from '@mantine/core';
 import { useRouter } from 'next/navigation';
-import type { FC } from 'react';
-
-import type { VideoInfo } from '@/type/video';
+import type { FC, FormEvent } from 'react';
 
 type AnalysisTopProps = {
-  handleAnalyzeVideo: (
-    e: React.MouseEvent<HTMLButtonElement>,
-    videoInfo: VideoInfo[],
-  ) => void;
+  handleAnalyzeVideo: (e: FormEvent<HTMLFormElement>, videos: File[]) => void;
   isAnalyze: boolean;
-  videoInfo: VideoInfo[];
+  videos: File[];
 };
 
 export const AnalysisTop: FC<AnalysisTopProps> = ({
   handleAnalyzeVideo,
   isAnalyze,
-  videoInfo,
+  videos,
 }) => {
   const router = useRouter();
 
@@ -33,13 +28,16 @@ export const AnalysisTop: FC<AnalysisTopProps> = ({
       >
         Analysis
       </Title>
-      <form>
+      <form
+        method='post'
+        encType='multipart/form-data'
+        onSubmit={(e) => handleAnalyzeVideo(e, videos)}
+      >
         <Button
           loading={isAnalyze}
-          disabled={videoInfo.length === 0}
+          disabled={videos.length === 0}
           variant='gradient'
           type='submit'
-          onClick={(e) => handleAnalyzeVideo(e, videoInfo)}
         >
           Start
         </Button>

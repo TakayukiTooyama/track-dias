@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 'use client';
 
 import {
@@ -9,7 +10,11 @@ import {
   ScrollArea,
   Text,
 } from '@mantine/core';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
 import type { NextPage } from 'next';
+import { useRouter } from 'next/navigation';
+import type { FormEvent } from 'react';
 import { useCallback, useState } from 'react';
 import { Edit, EditOff, Movie, VideoPlus } from 'tabler-icons-react';
 
@@ -18,20 +23,83 @@ import { FileList } from '@/app/analysis/FileList';
 import { Card } from '@/component/element/Card';
 import { Header } from '@/component/layout';
 import { VideoPlayer } from '@/lib/player';
-import { useVideoInfo } from '@/lib/player/useVideo';
 import type { VideoInfo } from '@/type/video';
 
 const Analysis: NextPage = () => {
-  const {
-    deleteVideoInfo,
-    handleAnalyzeVideo,
-    handleInputVideo,
-    handleSelectVideo,
-    isAnalyze,
-    selectedVideo,
-    videoInfo,
-    videoUrl,
-  } = useVideoInfo();
+  const queryClient = useQueryClient();
+
+  const router = useRouter();
+  const [videos, setVideos] = useState<File[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_selectedVideo, setSelectedVideo] = useState<File>();
+  const [videoUrl, setVideoUrl] = useState('');
+
+  const handleDeleteVideo = useCallback(
+    (videoName: string) => {
+      const newFiles = videos.filter((video) => video.name !== videoName);
+      setVideos(newFiles);
+    },
+    [videos],
+  );
+
+  const handleInputVideo = useCallback(
+    (inputVideos: File[]) => {
+      const concatVideoList = [...videos, ...inputVideos];
+      const deduplicatedArray = Array.from(
+        new Map(concatVideoList.map((video) => [video.name, video])).values(),
+      );
+      setVideos(deduplicatedArray);
+      setVideoUrl(window.URL.createObjectURL(deduplicatedArray[0]));
+      setSelectedVideo(deduplicatedArray[0]);
+    },
+    [videos],
+  );
+
+  const handleSelectVideo = useCallback(
+    (video: File) => {
+      if (videoUrl) {
+        window.URL.revokeObjectURL(videoUrl);
+      }
+      setVideoUrl(window.URL.createObjectURL(video));
+      setSelectedVideo(video);
+    },
+    [videoUrl],
+  );
+
+  const { isLoading, mutate } = useMutation(
+    (formData: FormData) =>
+      axios.post('http://127.0.0.1:8000/uploadfile', formData),
+    {
+      onSuccess: ({ data }: { data: Omit<VideoInfo[], 'file'> }) => {
+        const videoInfo: VideoInfo[] = data.map((data) => ({
+          ...data,
+          file: videos.find((video) => video.name === data.name)!,
+        }));
+        queryClient.setQueryData(['videoInfo'], () => videoInfo);
+        router.push('/result');
+      },
+    },
+  );
+  // const { isLoading, mutate } = useMutation({
+  //   mutationFn: (formData: FormData) =>
+  //     axios.post('http://127.0.0.1:8000/uploadfile', formData),
+  //   mutationKey: ['addTodo'],
+  //   onSuccess: () => {
+  //     router.push('/result');
+  //   },
+  // });
+
+  const handleSubmitVideo = useCallback(
+    (e: FormEvent<HTMLFormElement>, videos: File[]) => {
+      e.preventDefault();
+      const formData = new FormData();
+      videos.forEach((video) => {
+        formData.append('videoFiles', video, video.name);
+      });
+      mutate(formData);
+    },
+    [mutate],
+  );
 
   const [isEdit, setIsEdit] = useState(false);
   const handleClickEdit = useCallback(() => {
@@ -50,9 +118,9 @@ const Analysis: NextPage = () => {
     >
       <Container className='space-y-4'>
         <AnalysisTop
-          videoInfo={videoInfo as VideoInfo[]}
-          isAnalyze={isAnalyze}
-          handleAnalyzeVideo={handleAnalyzeVideo}
+          videos={videos}
+          isAnalyze={isLoading}
+          handleAnalyzeVideo={handleSubmitVideo}
         />
         <FileButton
           onChange={handleInputVideo}
@@ -75,14 +143,14 @@ const Analysis: NextPage = () => {
             </ActionIcon>
           }
         >
-          {videoInfo.length > 0 ? (
+          {videos.length > 0 ? (
             <ScrollArea style={{ height: 300 }} type='scroll' scrollbarSize={8}>
               <FileList
-                videoInfo={videoInfo as VideoInfo[]}
+                videos={videos}
                 icon={<Movie color='gray' />}
                 isEdit={isEdit}
                 handleSelectItem={handleSelectVideo}
-                handleDeleteItem={deleteVideoInfo}
+                handleDeleteItem={handleDeleteVideo}
               />
             </ScrollArea>
           ) : (
@@ -91,7 +159,7 @@ const Analysis: NextPage = () => {
             </Text>
           )}
         </Card>
-        {videoInfo.length > 0 && videoUrl && <VideoPlayer url={videoUrl} />}
+        {videoUrl && <VideoPlayer url={videoUrl} />}
       </Container>
     </AppShell>
   );

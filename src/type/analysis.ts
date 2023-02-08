@@ -6,11 +6,12 @@ import type {
 } from '@/const';
 
 /* キーポイント */
-export type BodayPartsKey = keyof typeof BODY_PARTS;
-export type BodayPartsLabel = (typeof BODY_PARTS)[keyof typeof BODY_PARTS];
+export type BodyPartsKey = keyof typeof BODY_PARTS;
+export type BodyPartsLabel = (typeof BODY_PARTS)[keyof typeof BODY_PARTS];
 export type Keypoint = {
-  [key in BodayPartsKey]?: [number, number] | [null | null];
+  [key in BodyPartsKey]: [number, number] | [null, null];
 };
+export type KeypointKeyValue = [BodyPartsKey, [number, number] | [null, null]];
 
 /* ドルフィンキック */
 export type DolphinAnalysisKey = keyof typeof DOLPHIN_ANALYSIS;
