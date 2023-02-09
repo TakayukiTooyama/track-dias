@@ -3,7 +3,7 @@
 import { Container, Skeleton } from '@mantine/core';
 import { useElementSize } from '@mantine/hooks';
 import type { MutableRefObject } from 'react';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { KEYPOINT } from '@/const';
 import { Canvas, ORIGIN } from '@/lib/canvas';
@@ -13,9 +13,12 @@ const VideoWidth = 1244;
 const VideoHeight = 432;
 
 const CanvasPage = () => {
-  const { devicePixelRatio: ratio = 1 } = window;
   const video = useRef<HTMLVideoElement | null>(null);
   const { ref, width } = useElementSize();
+  const [ratio, setRatio] = useState(1.0);
+  useEffect(() => {
+    setRatio(window.devicePixelRatio);
+  }, []);
 
   return (
     <Container>
