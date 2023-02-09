@@ -8,7 +8,6 @@ import {
   Paper,
   Title,
 } from '@mantine/core';
-import type { NextPage } from 'next';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -22,7 +21,7 @@ import {
 } from '@/lib/table';
 import type { RechartsDotPayload } from '@/type';
 
-const Home: NextPage = () => {
+const Home = () => {
   const [tableBody, setTableBody] = useState<DolphinTable[]>([]);
   // const [tableHead, setTableHead] = useState<MRT_ColumnDef<DolphinTable>[]>([]);
   const [isLoading, setIsLoading] = useState(true);

@@ -6,7 +6,7 @@ import type { ColorScheme } from '@mantine/core';
 import { ColorSchemeProvider } from '@mantine/core';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import type { NextPage } from 'next';
+import type { FC } from 'react';
 import { useState } from 'react';
 
 import MantineEmotionProvider from '@/app/mantine-emotion-provider';
@@ -15,7 +15,7 @@ type RootLayoutProps = {
   children: React.ReactNode;
 };
 
-const RootLayout: NextPage<RootLayoutProps> = ({ children }) => {
+const RootLayout: FC<RootLayoutProps> = ({ children }) => {
   const [colorScheme, setColorScheme] = useState<ColorScheme>('light');
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));

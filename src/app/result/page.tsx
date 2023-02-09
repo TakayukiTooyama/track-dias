@@ -9,10 +9,9 @@ import {
   Title,
 } from '@mantine/core';
 import { useQueryClient } from '@tanstack/react-query';
-import type { NextPage } from 'next';
 import { useCallback, useEffect, useState } from 'react';
 
-import { FileList } from '@/app/analysis/FileList';
+import { FileList } from '@/component/element';
 import { Header } from '@/component/layout';
 import { DataBlock, LineChart } from '@/lib/chart';
 import type { DolphinTable, MRT_Cell } from '@/lib/table';
@@ -24,7 +23,7 @@ import {
 import type { RechartsDotPayload } from '@/type';
 import type { VideoInfo } from '@/type/video';
 
-const Result: NextPage = () => {
+const Result = () => {
   /* キャッシュ */
   const queryClient = useQueryClient();
   queryClient.setDefaultOptions({

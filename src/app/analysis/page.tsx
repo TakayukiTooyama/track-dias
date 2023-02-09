@@ -12,20 +12,18 @@ import {
 } from '@mantine/core';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import type { NextPage } from 'next';
 import { useRouter } from 'next/navigation';
 import type { FormEvent } from 'react';
 import { useCallback, useState } from 'react';
 import { Edit, EditOff, Movie, VideoPlus } from 'tabler-icons-react';
 
-import { AnalysisTop } from '@/app/analysis/AnalysisTop';
-import { FileList } from '@/app/analysis/FileList';
+import { FileList } from '@/component/element';
 import { Card } from '@/component/element/Card';
-import { Header } from '@/component/layout';
+import { AnalysisTop, Header } from '@/component/layout';
 import { VideoPlayer } from '@/lib/player';
 import type { VideoInfo } from '@/type/video';
 
-const Analysis: NextPage = () => {
+const Analysis = () => {
   const queryClient = useQueryClient();
 
   const router = useRouter();
