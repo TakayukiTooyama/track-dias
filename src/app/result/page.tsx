@@ -1,18 +1,12 @@
 'use client';
 
-import {
-  AppShell,
-  AspectRatio,
-  Container,
-  Divider,
-  Paper,
-  Title,
-} from '@mantine/core';
+import { AppShell, Container, Divider, Paper, Title } from '@mantine/core';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useState } from 'react';
 
 import { FileList } from '@/component/element';
 import { Header } from '@/component/layout';
+import { VideoOnCanvas } from '@/lib/canvas';
 import { DataBlock, LineChart } from '@/lib/chart';
 import type { DolphinTable, MRT_Cell } from '@/lib/table';
 import {
@@ -36,6 +30,13 @@ const Result = () => {
   /* 動画 */
   const [videos, setVideos] = useState<File[]>([]);
   const [videoUrl, setVideoUrl] = useState('');
+  const [selectedVideo, setSelectedVideo] = useState<VideoInfo>();
+
+  useEffect(() => {
+    if (!selectedVideo && videoInfo && videoInfo.length > 0) {
+      setSelectedVideo(videoInfo[0]);
+    }
+  }, [videoInfo, selectedVideo]);
 
   useEffect(() => {
     if (videoUrl) {
@@ -60,8 +61,9 @@ const Result = () => {
         window.URL.revokeObjectURL(videoUrl);
       }
       setVideoUrl(window.URL.createObjectURL(video));
+      setSelectedVideo(videoInfo?.find((info) => info.name === video.name));
     },
-    [videoUrl],
+    [videoUrl, videoInfo],
   );
 
   /* テーブル */
@@ -108,28 +110,13 @@ const Result = () => {
       })}
     >
       <Container className='space-y-4'>
-        <AspectRatio
-          ratio={16 / 9}
-          sx={(theme) => ({
-            backgroundColor:
-              theme.colorScheme === 'dark'
-                ? theme.colors.dark[6]
-                : theme.colors.gray[3],
-          })}
-        >
-          {videoUrl ? (
-            <video
-              src={videoUrl}
-              controls
-              muted
-              loop
-              playsInline
-              autoPlay
-              preload='metadata'
-              controlsList='nodownload'
-            />
-          ) : null}
-        </AspectRatio>
+        {videoUrl && selectedVideo && (
+          <VideoOnCanvas
+            url={videoUrl}
+            videoHeight={selectedVideo.videoHeight}
+            videoWidth={selectedVideo.videoWidth}
+          />
+        )}
         <Paper withBorder radius='md' p='md'>
           <Title size='h2'>Chart</Title>
           <Divider className='mb-4' />

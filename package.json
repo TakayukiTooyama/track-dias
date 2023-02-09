@@ -73,5 +73,8 @@
     "**/*.{json,md,mdx,css,html,yml,yaml,scss}": [
       "prettier --write ."
     ]
+  },
+  "volta": {
+    "node": "18.14.0"
   }
 }
