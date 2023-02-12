@@ -66,7 +66,7 @@ export const drawMarkers = (
       context.arc(
         xy[0] * (canvasWidth / videoWidth),
         xy[1] * (canvasHeight / videoHeight),
-        3,
+        8,
         0,
         2 * Math.PI,
       );
@@ -89,7 +89,7 @@ export const drawMarker = (
   context.arc(
     xy[0] * (canvasWidth / videoWidth),
     xy[1] * (canvasHeight / videoHeight),
-    3,
+    8,
     0,
     2 * Math.PI,
   );
@@ -227,7 +227,7 @@ export const drawStickPicture = (
   stickPoints.forEach((points: (number | null)[]) => {
     if (points[0] !== null) {
       context.beginPath();
-      context.lineWidth = 2;
+      context.lineWidth = 4;
       context.strokeStyle = 'white';
       context.moveTo(
         points[0]! * (canvasWidth / videoWidth),

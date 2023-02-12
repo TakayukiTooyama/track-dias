@@ -12,7 +12,7 @@ type VideoOnCanvas = {
   videoWidth: number;
 };
 
-export const VideoOnCanvas: FC<VideoOnCanvas> = ({
+export const PlayerOnCanvas: FC<VideoOnCanvas> = ({
   url,
   videoHeight,
   videoWidth,

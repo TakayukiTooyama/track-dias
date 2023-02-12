@@ -1,13 +1,15 @@
 'use client';
 
-import { AppShell, Container, Divider, Paper, Title } from '@mantine/core';
+import { AppShell, Box, Container, Divider, Paper, Title } from '@mantine/core';
+import { useElementSize } from '@mantine/hooks';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useState } from 'react';
 
 import { FileList } from '@/component/element';
 import { Header } from '@/component/layout';
-import { VideoOnCanvas } from '@/lib/canvas';
+import { LazyCanvas } from '@/lib/canvas';
 import { DataBlock, LineChart } from '@/lib/chart';
+import { Player, usePlayer } from '@/lib/player';
 import type { DolphinTable, MRT_Cell } from '@/lib/table';
 import {
   makeAnalysisResultTableBody,
@@ -27,7 +29,7 @@ const Result = () => {
   });
   const videoInfo = queryClient.getQueryData<VideoInfo[]>(['videoInfo']);
 
-  /* 動画 */
+  /* Video */
   const [videos, setVideos] = useState<File[]>([]);
   const [videoUrl, setVideoUrl] = useState('');
   const [selectedVideo, setSelectedVideo] = useState<VideoInfo>();
@@ -66,7 +68,7 @@ const Result = () => {
     [videoUrl, videoInfo],
   );
 
-  /* テーブル */
+  /* Table */
   const [tableBody, setTableBody] = useState<DolphinTable[]>([]);
   // const [tableHead, setTableHead] = useState<MRT_ColumnDef<DolphinTable>[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -90,6 +92,15 @@ const Result = () => {
     alert(e['value']);
   };
 
+  /* Player */
+  const { height, ref, width } = useElementSize();
+  const { playerSize, setPlayerSize } = usePlayer();
+
+  useEffect(() => {
+    setPlayerSize(width, height);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [width]);
+
   const handleClickDot = (payload: unknown): void => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const dotPayload = payload as Record<keyof RechartsDotPayload, unknown>;
@@ -110,13 +121,24 @@ const Result = () => {
       })}
     >
       <Container className='space-y-4'>
-        {videoUrl && selectedVideo && (
-          <VideoOnCanvas
-            url={videoUrl}
-            videoHeight={selectedVideo.videoHeight}
-            videoWidth={selectedVideo.videoWidth}
-          />
-        )}
+        <Paper withBorder p='md' radius='md' ref={ref}>
+          <div className='flex items-center justify-between'>
+            <Title size='h3' mb='sm'>
+              tooyama_left.mov
+            </Title>
+          </div>
+          <Divider />
+          <Box className='w-full' ref={ref}>
+            <Player
+              lazyComponent={LazyCanvas}
+              durationInFrames={94}
+              // durationInFrames={Math.ceil(selectedVideo.duration / 0.033333)}
+              playerWidth={playerSize.width}
+              videoUrl={'/video/crouch_left.mov'}
+              // videoUrl={videoUrl}
+            />
+          </Box>
+        </Paper>
         <Paper withBorder radius='md' p='md'>
           <Title size='h2'>Chart</Title>
           <Divider className='mb-4' />

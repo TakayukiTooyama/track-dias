@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { CanvasViewState, Point } from '@/lib/canvas';
 import {
@@ -73,7 +73,7 @@ export const usePanZoomCanvas = (
   );
 
   // add event listener on canvas for zoom
-  useLayoutEffect(() => {
+  useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
       if (context) {

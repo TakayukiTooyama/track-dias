@@ -1,60 +1,61 @@
 'use client';
 
-import { Container, Skeleton } from '@mantine/core';
-import { useElementSize } from '@mantine/hooks';
-import type { MutableRefObject } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect } from 'react';
 
-import { KEYPOINT } from '@/const';
-import { Canvas, ORIGIN } from '@/lib/canvas';
-
-const url = 'video/crouch_left.mov';
-const VideoWidth = 1244;
-const VideoHeight = 432;
+import { Header } from '@/component/layout';
+import { LazyCanvas } from '@/lib/canvas';
+import {
+  AppShell,
+  Box,
+  Container,
+  Divider,
+  Paper,
+  Title,
+  useElementSize,
+} from '@/lib/mantine';
+import { Player, usePlayer } from '@/lib/player';
 
 const CanvasPage = () => {
-  const video = useRef<HTMLVideoElement | null>(null);
-  const { ref, width } = useElementSize();
-  const [ratio, setRatio] = useState(1.0);
+  const { height, ref, width } = useElementSize();
+  const { playerSize, setPlayerSize } = usePlayer();
+
   useEffect(() => {
-    setRatio(window.devicePixelRatio);
-  }, []);
+    setPlayerSize(width, height);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [width]);
 
   return (
-    <Container>
-      <div className='h-full w-full bg-black'>
-        <div
-          className='relative mx-auto aspect-video max-h-80 bg-gray-800'
-          ref={ref}
-        >
-          {url && (
-            <video
-              ref={video}
-              className='absolute top-0 left-0 w-full'
-              src={url}
+    <AppShell
+      padding='md'
+      header={<Header />}
+      sx={(theme) => ({
+        backgroundColor:
+          theme.colorScheme === 'dark'
+            ? theme.colors.dark[7]
+            : theme.colors.gray[2],
+      })}
+    >
+      <Container className='space-y-4'>
+        <Paper withBorder p='md' radius='sm' ref={ref}>
+          <div className='flex items-center justify-between'>
+            <Title size='h3' mb='sm'>
+              tooyama_left.mov
+            </Title>
+          </div>
+          <Divider />
+          <Box className='w-full' ref={ref}>
+            <Player
+              lazyComponent={LazyCanvas}
+              durationInFrames={94}
+              // durationInFrames={Math.ceil(selectedVideo.duration / 0.033333)}
+              playerWidth={playerSize.width}
+              videoUrl={'/video/crouch_left.mov'}
+              // videoUrl={videoUrl}
             />
-          )}
-          {video ? (
-            <Canvas
-              video={video as MutableRefObject<HTMLVideoElement>}
-              keypoints={KEYPOINT}
-              currentFrame={0}
-              videoWidth={1244}
-              videoHeight={432}
-              canvasHeight={width * (VideoHeight / VideoWidth)}
-              canvasWidth={width}
-              devicePixelRatio={ratio}
-              canvasViewState={{
-                offset: ORIGIN,
-                scale: 1,
-              }}
-            />
-          ) : (
-            <Skeleton className='h-full w-full' />
-          )}
-        </div>
-      </div>
-    </Container>
+          </Box>
+        </Paper>
+      </Container>
+    </AppShell>
   );
 };
 

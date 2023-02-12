@@ -1,5 +1,6 @@
+/* eslint-disable import/no-default-export */
 import type { FC, MutableRefObject } from 'react';
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import type { CanvasViewState } from '@/lib/canvas';
 import { useDraw } from '@/lib/canvas';
@@ -39,7 +40,7 @@ export const Canvas: FC<CanvasProps> = ({
   );
 
   // セットアップ
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (canvasRef.current) {
       // get new drawing context
       const renderCtx = canvasRef.current.getContext('2d');
@@ -48,7 +49,7 @@ export const Canvas: FC<CanvasProps> = ({
   }, [setContext]);
 
   // 描画
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (context && video.current) {
       context.canvas.width = canvasWidth * devicePixelRatio;
       context.canvas.height = canvasHeight * devicePixelRatio;
@@ -78,7 +79,6 @@ export const Canvas: FC<CanvasProps> = ({
       width={canvasWidth * devicePixelRatio}
       height={canvasHeight * devicePixelRatio}
       style={{ height: canvasHeight, width: canvasWidth }}
-      className='absolute top-0 left-0 w-full'
     />
   );
 };

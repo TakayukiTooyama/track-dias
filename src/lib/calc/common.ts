@@ -11,6 +11,6 @@ export const calcAngle = (
   const ban = ba[0] ** 2 + ba[1] ** 2;
   const bcn = bc[0] ** 2 + bc[1] ** 2;
   const radian = Math.acos(babc / Math.sqrt(ban * bcn));
-  const angle = (radian * 180) / Math.PI;
-  return Math.floor(angle);
+  const angle = radian * (180 / Math.PI); // ラジアン単位を角度に変換
+  return Math.floor(angle); // 小数点以下切り捨て
 };
