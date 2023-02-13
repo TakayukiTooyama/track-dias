@@ -1,6 +1,6 @@
 'use client';
 
-export * from './calc';
+export * from '../calc/analysisData';
 export * from './const';
 export * from './makeTableBody';
 export * from './makeTableHead';

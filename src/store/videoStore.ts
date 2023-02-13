@@ -14,7 +14,7 @@ export const videoStore = proxy<{ videoInfo: VideoInfo[] }>({
 });
 
 export const addVideoInfo = (files: File[]) => {
-  const inputVideoInfo = files.map((file) => ({
+  const inputVideoInfo: VideoInfo[] = files.map((file) => ({
     name: file.name,
     createdAt: new Date(),
     duration: 0,
@@ -22,6 +22,8 @@ export const addVideoInfo = (files: File[]) => {
     keypoints: [],
     lastAccess: new Date(),
     size: 0,
+    totalFrame: 0,
+    type: '',
     updatedAt: new Date(),
     videoHeight: 0,
     videoWidth: 0,

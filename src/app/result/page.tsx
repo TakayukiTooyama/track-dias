@@ -1,6 +1,15 @@
 'use client';
 
-import { AppShell, Box, Container, Divider, Paper, Title } from '@mantine/core';
+import {
+  AppShell,
+  Box,
+  Center,
+  Container,
+  Divider,
+  Loader,
+  Paper,
+  Title,
+} from '@mantine/core';
 import { useElementSize } from '@mantine/hooks';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useState } from 'react';
@@ -12,11 +21,12 @@ import { DataBlock, LineChart } from '@/lib/chart';
 import { Player, usePlayer } from '@/lib/player';
 import type { DolphinTable, MRT_Cell } from '@/lib/table';
 import {
+  fetchAnalysisData,
   makeAnalysisResultTableBody,
   makeAnalysisResultTableHead,
   Table,
 } from '@/lib/table';
-import type { RechartsDotPayload } from '@/type';
+import type { AngleData, Keypoint, RechartsDotPayload } from '@/type';
 import type { VideoInfo } from '@/type/video';
 
 const Result = () => {
@@ -35,7 +45,7 @@ const Result = () => {
   const [selectedVideo, setSelectedVideo] = useState<VideoInfo>();
 
   useEffect(() => {
-    if (!selectedVideo && videoInfo && videoInfo.length > 0) {
+    if (videoInfo && videoInfo.length > 0) {
       setSelectedVideo(videoInfo[0]);
     }
   }, [videoInfo, selectedVideo]);
@@ -62,8 +72,10 @@ const Result = () => {
       if (videoUrl) {
         window.URL.revokeObjectURL(videoUrl);
       }
-      setVideoUrl(window.URL.createObjectURL(video));
-      setSelectedVideo(videoInfo?.find((info) => info.name === video.name));
+      if (videoInfo && videoInfo.length > 0) {
+        setVideoUrl(window.URL.createObjectURL(video));
+        setSelectedVideo(videoInfo.find((info) => info.name === video.name));
+      }
     },
     [videoUrl, videoInfo],
   );
@@ -88,6 +100,14 @@ const Result = () => {
   };
 
   /* Chart */
+  const handleCreateLineChartData = (keypoints: Keypoint[]) => {
+    const analysisData = fetchAnalysisData(keypoints, 'dolphin');
+    const newData: AngleData[] = analysisData.map((result) => ({
+      angle: result.ankleAngle,
+      time: result.time,
+    }));
+    return newData;
+  };
   const handleClickXAxis = (e: never): void => {
     alert(e['value']);
   };
@@ -120,60 +140,69 @@ const Result = () => {
             : theme.colors.gray[2],
       })}
     >
-      <Container className='space-y-4'>
-        <Paper withBorder p='md' radius='md' ref={ref}>
-          <div className='flex items-center justify-between'>
-            <Title size='h3' mb='sm'>
-              tooyama_left.mov
-            </Title>
-          </div>
-          <Divider />
-          <Box className='w-full' ref={ref}>
-            <Player
-              lazyComponent={LazyCanvas}
-              durationInFrames={94}
-              // durationInFrames={Math.ceil(selectedVideo.duration / 0.033333)}
-              playerWidth={playerSize.width}
-              videoUrl={'/video/crouch_left.mov'}
-              // videoUrl={videoUrl}
-            />
-          </Box>
-        </Paper>
-        <Paper withBorder radius='md' p='md'>
-          <Title size='h2'>Chart</Title>
-          <Divider className='mb-4' />
-          <div className='mx-auto flex max-w-xs items-center justify-between'>
-            <DataBlock label='Average' data={80} unit='°' />
-            <DataBlock label='Max' data={80} unit='°' />
-            <DataBlock label='Growth' data={25} unit='％' />
-            <DataBlock label='Average' data={80} />
-          </div>
-          <div className='h-48'>
-            <LineChart
-              xDataKey='time'
-              yDataKey='hipAngle'
-              xLabel='経過時間(s)'
-              yLabel='股関節角度(°)'
-              data={[]}
-              handleClickDot={handleClickDot}
-              handleClickXAxis={handleClickXAxis}
-            />
-          </div>
-        </Paper>
-        <Table
-          tableBody={tableBody}
-          tableHead={makeAnalysisResultTableHead()}
-          handleSaveCell={handleSaveCell}
-          isLoading={isLoading}
-        />
-        {videoInfo && videoInfo.length > 0 && (
-          <FileList
-            handleDeleteItem={handleDeleteVideo}
-            handleSelectItem={handleSelectVideo}
-            videos={videoInfo.map((video) => video.file)}
+      {selectedVideo ? (
+        <Container className='space-y-4'>
+          <Paper withBorder p='md' radius='md' ref={ref}>
+            <div className='flex items-center justify-between'>
+              <Title size='h3' mb='sm'>
+                {selectedVideo.name}
+              </Title>
+            </div>
+            <Divider />
+            <Box className='w-full' ref={ref}>
+              <Player
+                lazyComponent={LazyCanvas}
+                // durationInFrames={selectedVideo.totalFrame}
+                durationInFrames={Math.ceil(selectedVideo.duration / 0.033333)}
+                playerWidth={playerSize.width}
+                // videoUrl={'/video/crouch_left.mov'}
+                videoUrl={videoUrl}
+                videoHeight={selectedVideo.videoHeight}
+                videoWidth={selectedVideo.videoWidth}
+                keypoints={selectedVideo.keypoints}
+              />
+            </Box>
+          </Paper>
+          <Paper withBorder radius='md' p='md'>
+            <Title size='h2'>Chart</Title>
+            <Divider className='mb-4' />
+            <div className='mx-auto flex max-w-xs items-center justify-between'>
+              <DataBlock label='Average' data={80} unit='°' />
+              <DataBlock label='Max' data={80} unit='°' />
+              <DataBlock label='Growth' data={25} unit='％' />
+              <DataBlock label='Average' data={80} />
+            </div>
+            <div className='h-48'>
+              <LineChart
+                xDataKey='time'
+                yDataKey='hipAngle'
+                xLabel='経過時間(s)'
+                yLabel='股関節角度(°)'
+                data={handleCreateLineChartData(selectedVideo.keypoints)}
+                handleClickDot={handleClickDot}
+                handleClickXAxis={handleClickXAxis}
+              />
+            </div>
+          </Paper>
+          <Table
+            tableBody={tableBody}
+            tableHead={makeAnalysisResultTableHead()}
+            handleSaveCell={handleSaveCell}
+            isLoading={isLoading}
           />
-        )}
-      </Container>
+          {videoInfo && videoInfo.length > 0 && (
+            <FileList
+              handleDeleteItem={handleDeleteVideo}
+              handleSelectItem={handleSelectVideo}
+              videos={videoInfo.map((video) => video.file)}
+            />
+          )}
+        </Container>
+      ) : (
+        <Center>
+          <Loader color='gray' size='lg' />
+        </Center>
+      )}
     </AppShell>
   );
 };

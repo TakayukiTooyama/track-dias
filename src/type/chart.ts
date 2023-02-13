@@ -1,5 +1,5 @@
 export type AngleData = {
-  angle: number;
+  angle: number | null;
   time: number;
 };
 

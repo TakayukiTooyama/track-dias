@@ -17,7 +17,9 @@ export type KeypointKeyValue = [BodyPartsKey, [number, number] | [null, null]];
 export type DolphinAnalysisKey = keyof typeof DOLPHIN_ANALYSIS;
 export type DolphinAnalysisLabel =
   (typeof DOLPHIN_ANALYSIS)[keyof typeof DOLPHIN_ANALYSIS];
-export type DolphinAnalysisValue = { [key in DolphinAnalysisKey]?: number };
+export type DolphinAnalysisValue = {
+  [key in DolphinAnalysisKey]: number | null;
+};
 
 /* 飛び込み動作 */
 export type DivingAnalysisKey = keyof typeof DIVING_ANALYSIS;
@@ -33,6 +35,12 @@ export type RunningAnalysisValue = { [key in RunningAnalysisKey]?: number };
 
 /* モーションフラグ */
 export type Motion = 'dolphin' | 'dive' | 'run';
+
+/* 全ての分析項目 */
+export type AnalysisItemKey =
+  | RunningAnalysisKey
+  | DivingAnalysisKey
+  | RunningAnalysisKey;
 
 // export const bodyPartsDataTable = {
 //   ...BODY_PARTS_XCOOR,

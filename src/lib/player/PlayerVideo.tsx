@@ -7,25 +7,32 @@ import { useCallback } from 'react';
 
 import type { CompProps } from '@/lib/player';
 import { PlayerVideoSkelton } from '@/lib/player';
+import type { Keypoint } from '@/type';
 
 type PlayerVideProps = {
   durationInFrames: number;
+  keypoints: Keypoint[];
   loop: boolean;
   playbackRate: number;
   playerHeight: number;
   playerRef: RefObject<PlayerRef>;
   playerWidth: number;
+  videoHeight: number;
   videoUrl: string;
+  videoWidth: number;
 } & CompProps<any>;
 
 export const PlayerVideo: FC<PlayerVideProps> = ({
   durationInFrames,
+  keypoints,
   loop,
   playbackRate,
   playerHeight,
   playerRef,
   playerWidth,
+  videoHeight,
   videoUrl,
+  videoWidth,
   ...props
 }) => {
   const renderLoading: RenderLoading = useCallback(
@@ -45,7 +52,7 @@ export const PlayerVideo: FC<PlayerVideProps> = ({
       doubleClickToFullscreen={true}
       loop={loop}
       clickToPlay={false}
-      inputProps={{ url: videoUrl }}
+      inputProps={{ keypoints, url: videoUrl, videoHeight, videoWidth }}
       renderLoading={renderLoading}
       playbackRate={playbackRate}
       spaceKeyToPlayOrPause={false}

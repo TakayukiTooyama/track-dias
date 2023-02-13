@@ -10,7 +10,8 @@ const API_URL = 'http://127.0.0.1:8000/uploadfile/';
 
 export const useVideoInfo = () => {
   const { videoInfo } = useSnapshot(videoStore);
-  const [selectedVideo, setSelectedVideo] = useState<VideoInfo>(); // 選択されている動画
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [selectedVideo, _setSelectedVideo] = useState<VideoInfo>(); // 選択されている動画
   const [videoUrl, setVideoUrl] = useState(''); // 動画のURL
   const [isAnalyze, setIsAnalyze] = useState(false); // 分析開始
   // const [files, setFiles] = useState<File[]>([])
@@ -48,9 +49,9 @@ export const useVideoInfo = () => {
     const deduplicatedArray = Array.from(
       new Map(concatVideoInfo.map((info) => [info.name, info])).values(),
     );
-    videoStore.videoInfo = deduplicatedArray;
+    // videoStore.videoInfo = deduplicatedArray;
     setVideoUrl(window.URL.createObjectURL(deduplicatedArray[0].file));
-    setSelectedVideo(deduplicatedArray[0]);
+    // setSelectedVideo(deduplicatedArray[0]);
   }, []);
 
   /* 動画選択 */

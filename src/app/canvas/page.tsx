@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 
 import { Header } from '@/component/layout';
+import { KEYPOINT } from '@/const';
 import { LazyCanvas } from '@/lib/canvas';
 import {
   AppShell,
@@ -50,6 +51,9 @@ const CanvasPage = () => {
               // durationInFrames={Math.ceil(selectedVideo.duration / 0.033333)}
               playerWidth={playerSize.width}
               videoUrl={'/video/crouch_left.mov'}
+              videoHeight={432}
+              videoWidth={1244}
+              keypoints={KEYPOINT}
               // videoUrl={videoUrl}
             />
           </Box>
